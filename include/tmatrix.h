@@ -64,6 +64,9 @@ public:
   }
   TDynamicVector& operator=(TDynamicVector&& v) noexcept
   {
+      sz = 0;
+      delete[] pMem;
+      pMem = nullptr;
       swap(*this, v);
       return *this;
   }
@@ -71,7 +74,7 @@ public:
   size_t size() const noexcept { return sz; }
 
   // индексация
-  T& operator[](size_t ind)
+  T& operator[](size_t ind) noexcept
   {
       return pMem[ind];
   }
@@ -201,10 +204,10 @@ public:
   TDynamicMatrix(size_t s = 1) : TDynamicVector<TDynamicVector<T>>(s)
   {
       if (s > MAX_MATRIX_SIZE) throw exception("too large size for matrix");
-    for (size_t i = 0; i < s; i++)
-      pMem[i] = TDynamicVector<T>(s);
-  }
-
+    for (size_t i = 0; i < sz; i++)
+      pMem[i] = TDynamicVector<T>(sz);
+  } 
+  
   using TDynamicVector<TDynamicVector<T>>::operator[];
 
   T& at(size_t ind1, size_t ind2)
@@ -222,7 +225,7 @@ public:
       return pMem[ind1][ind2];
   }
 
-  size_t size() const noexcept { return sz*sz; }
+  size_t size() const noexcept { return sz; }
 
   // сравнение
   bool operator==(const TDynamicMatrix& m) const noexcept
@@ -278,7 +281,7 @@ public:
           for (size_t j = 0; j < sz; j++)
               for (size_t k = 0; k < sz; k++)
                   tmp.pMem[i][j] += this->pMem[i][k] * m.pMem[k][j];
-      return res;
+      return tmp;
   }
 
   // ввод/вывод
@@ -291,9 +294,12 @@ public:
   }
   friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v)
   {
-      for (size_t i = 0; i < v.sz; i++)
+      for (size_t i = 0; i < v.sz; i++) {
           for (size_t j = 0; j < v.sz; j++)
-              ostr << v.pMem[i][j];
+              ostr << v.pMem[i][j] << "  ";
+          ostr << endl;
+      }
+      ostr << '\n';
       return ostr;
   }
 };

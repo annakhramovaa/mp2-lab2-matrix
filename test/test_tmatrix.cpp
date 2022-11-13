@@ -52,7 +52,7 @@ TEST(TDynamicMatrix, can_get_size)
 {
 	TDynamicMatrix<int> n(4);
 
-	EXPECT_EQ(n.size(), 16);
+	EXPECT_EQ(n.size(), 4);
 }
 
 TEST(TDynamicMatrix, can_set_and_get_element)
